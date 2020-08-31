@@ -143,7 +143,13 @@
     <ClCompile Include="ProfileConsole.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="DatabaseReader.h" />
+    <ClInclude Include="DatabaseWriter.h" />
+    <ClInclude Include="PlayerProfile.h" />
     <ClInclude Include="ProfileConsole.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="database.bin" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
