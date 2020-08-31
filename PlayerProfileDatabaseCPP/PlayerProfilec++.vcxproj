@@ -140,6 +140,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
+    <ClCompile Include="DatabaseReader.cpp" />
+    <ClCompile Include="DatabaseWriter.cpp" />
+    <ClCompile Include="PlayerProfile.cpp" />
     <ClCompile Include="ProfileConsole.cpp" />
   </ItemGroup>
   <ItemGroup>
