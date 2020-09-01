@@ -1,5 +1,4 @@
 #include "PlayerArray.h"
-#include "PlayerProfile.h"
 
 PlayerArray::PlayerArray(PlayerProfile* data, unsigned int elementCount) : elements(data), count(elementCount)
 {
@@ -8,9 +7,13 @@ PlayerArray::PlayerArray(PlayerProfile* data, unsigned int elementCount) : eleme
 
 void PlayerArray::sortAlphabetically()
 {
-	//bubble sort here
+	if (!isSorted)
+	{
+		//TODO: impliment
+		//bubble sort here using std string
 
-	isSorted = true;//do last
+		isSorted = true;//do last
+	}
 }
 
 void PlayerArray::growElements(unsigned int additionalCount)
@@ -36,13 +39,10 @@ void PlayerArray::addProfile(const PlayerProfile profile)
 	isSorted = false;
 }
 
-bool PlayerArray::findProfile(const std::string& name)
+int PlayerArray::findProfile(const char* name)
 {
-	if (!isSorted)
-	{
-		sortAlphabetically();
-	}
-
+	sortAlphabetically();
+	//TODO: impliment
 	//do binary search here
 
 	return false;

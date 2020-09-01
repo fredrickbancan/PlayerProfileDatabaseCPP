@@ -1,6 +1,5 @@
 #pragma once
-#include <string>
-struct PlayerProfile;
+#include "PlayerProfile.h"
 /*class for storing arrays of player data and dynamically changing its size.*/
 class PlayerArray
 {
@@ -24,8 +23,8 @@ public:
 	/*adds the provided profile to array*/
 	void addProfile(const PlayerProfile profile);
 
-	/*returns true if elements contains a profile with the provided name, uses binary search.*/
-	bool findProfile(const std::string& name);
+	/*returns the line number of the found profile (starting from 1). Returns 0 if there is none. Returns -1 if the profile has not been saved to file yet. Uses binary search.*/
+	int findProfile(const char* name);
 
 	/*sorts elements by name using bubble sort*/
 	void sortAlphabetically();

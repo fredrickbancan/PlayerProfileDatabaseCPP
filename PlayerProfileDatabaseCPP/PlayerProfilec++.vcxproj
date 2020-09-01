@@ -140,15 +140,17 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="Application.cpp" />
-    <ClCompile Include="DatabaseReader.cpp" />
-    <ClCompile Include="DatabaseWriter.cpp" />
+    <ClCompile Include="DatabaseManager.cpp" />
+    <ClCompile Include="MenuAddPlayerProfile.cpp" />
+    <ClCompile Include="MenuChangePlayerProfile.cpp" />
     <ClCompile Include="PlayerArray.cpp" />
     <ClCompile Include="PlayerProfile.cpp" />
     <ClCompile Include="ProfileConsole.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="DatabaseReader.h" />
-    <ClInclude Include="DatabaseWriter.h" />
+    <ClInclude Include="DatabaseManager.h" />
+    <ClInclude Include="MenuAddPlayerProfile.h" />
+    <ClInclude Include="MenuChangePlayerProfile.h" />
     <ClInclude Include="PlayerArray.h" />
     <ClInclude Include="PlayerProfile.h" />
     <ClInclude Include="ProfileConsole.h" />

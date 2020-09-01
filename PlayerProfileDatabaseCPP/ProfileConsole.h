@@ -2,6 +2,8 @@
 #include "Windows.h"
 #include <iostream>
 
+class MenuAddPlayerProfile;
+class MenuChangePlayerProfile;
 /*an enum class for chosing console colours*/
 enum class ConsoleColor
 {
@@ -30,6 +32,8 @@ class ProfileConsole
 private:
 	/*singleton instance*/
 	static ProfileConsole* instance;
+	MenuAddPlayerProfile* playerAddMenu = nullptr;
+	MenuChangePlayerProfile* playerChangeMenu = nullptr;
 public:
 	static const ConsoleColor defaultConsoleColor = ConsoleColor::BLACK;
 	//functions
@@ -39,13 +43,27 @@ public:
 	/*Function for getting a pointer to the singleton instance of profileconsole*/
 	static ProfileConsole* get();
 
+	~ProfileConsole();
+
+	/*initialize profile console*/
+	void init();
+
 	/*Opens the console to screen, and asks for user input.*/
-	void open();
+	void doUserInput();
 
 	/*Can be called to announce a string into console using the console default text color*/
 	static void announce(const char* input)
 	{
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (int)defaultConsoleColor);
+		std::cout << input;
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (int)ConsoleColor::WHITE);
+		std::cout << std::endl;
+	}
+
+	/*Can be called to print a string to console in green*/
+	static void list(const char* input)
+	{
+		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (int)ConsoleColor::GREEN);
 		std::cout << input;
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (int)ConsoleColor::WHITE);
 		std::cout << std::endl;
@@ -68,5 +86,11 @@ public:
 		system("PAUSE");
 		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), (int)ConsoleColor::WHITE);
 		std::cout << std::endl;
+	}
+
+	/*can be called to clear the console*/
+	static void clearPrompt()
+	{
+		system("CLS");
 	}
 };
