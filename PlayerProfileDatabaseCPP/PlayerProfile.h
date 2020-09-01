@@ -1,9 +1,7 @@
 #pragma once
-#include <string>
-
 /*Simple player struct for storing player data*/
 struct PlayerProfile
 {
-	std::string name;
-	unsigned int highScore;
+	char name[16] = "null          \0";
+	unsigned int highScore = 0;
 };

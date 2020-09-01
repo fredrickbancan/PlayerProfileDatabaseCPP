@@ -1,7 +1,6 @@
 #include "ProfileConsole.h"
-#include <iostream>
-ProfileConsole* ProfileConsole::instance = nullptr;
 
+ProfileConsole* ProfileConsole::instance = nullptr;
 ProfileConsole* ProfileConsole::get()
 {
 	if (instance == nullptr)
