@@ -28,11 +28,12 @@ void ProfileConsole::init()
 
 void ProfileConsole::doUserInput()
 {
+	if (DatabaseManager::get()->getHasError())
+	{
+		return;
+	}
+
 	bool quitting = false;
-
-	announce("Welcome to the player database console.");
-	pausePrompt();
-
 	char pressedChar = 0;
 	while (!quitting)
 	{

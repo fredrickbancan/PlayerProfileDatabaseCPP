@@ -16,6 +16,8 @@ private:
 	  increasing saving efficiency.*/
 	PlayerArray* changedData = nullptr;
 
+	/*Bool will be true if there was an error loading/opening the database file.*/
+	bool error = false;
 public:
 
 	//functions
@@ -44,4 +46,7 @@ public:
 
 	/*Attempts to save all of the changed data to the binary file. If there is no file, creates a new one.*/
 	void tryToSaveChangedDataToFile();
+
+	/*Returns true if there was an error in opening / loading the database file.*/
+	bool getHasError() { return error; }
 };
