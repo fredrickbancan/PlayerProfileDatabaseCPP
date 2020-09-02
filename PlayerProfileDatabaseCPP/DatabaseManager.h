@@ -24,7 +24,6 @@ public:
 private:
 	/*attempts to load database from file, otherwise creates empty.*/
 	void tryToLoadDatabase();
-
 public:
 	/*returns singleton instance*/
 	static DatabaseManager* get();
@@ -44,7 +43,7 @@ public:
 	  Returns: true if found, false if not found.*/
 	bool tryToChangeExistingPlayerProfile(const char* name, unsigned int score);
 
-	/*Attempts to save all of the changed data to the binary file. If there is no file, creates a new one.*/
+	/*Attempts to save all of the changed data to the binary file.*/
 	void tryToSaveChangedDataToFile();
 
 	/*Returns true if there was an error in opening / loading the database file.*/

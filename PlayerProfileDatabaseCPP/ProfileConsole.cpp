@@ -79,6 +79,19 @@ void ProfileConsole::doUserInput()
 	}
 
 	clearPrompt();
+	announce("Attempting to save all changed profiles...\n");
+	DatabaseManager::get()->tryToSaveChangedDataToFile();
+	if (DatabaseManager::get()->getHasError())
+	{
+		error("Could not save changed data to database file!");
+	}
+	else
+	{
+		list("Successfully saved changed profiles!");
+	}
+	pausePrompt();
+
+	clearPrompt();
 	list("Goodbye!");
 	pausePrompt();
 }

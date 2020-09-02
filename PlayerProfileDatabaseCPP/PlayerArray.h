@@ -32,6 +32,9 @@ public:
 	/*returns the pointer to array of playerprofiles*/
 	PlayerProfile* getElements() const { return elements; }
 
+	/*returns reference to element at provided index*/
+	PlayerProfile& elementAt(unsigned int i) const { return elements[i]; };
+
 	/*returns number of elements in array*/
 	unsigned int getCount() const { return count; }
 

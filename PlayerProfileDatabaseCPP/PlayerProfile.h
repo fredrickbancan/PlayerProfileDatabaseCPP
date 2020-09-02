@@ -4,5 +4,5 @@ struct PlayerProfile
 {
 	char name[16];
 	unsigned int highScore;
-	int originalLineNumber;//the line number in which this profile is/was located in the database file. -1 if it has not been saved yet.
+	unsigned int originalLineNumber;//the line number in which this profile is/was located in the database file starting from 1. 0 if it has not been saved yet.
 };
