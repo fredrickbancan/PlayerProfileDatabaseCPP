@@ -32,7 +32,7 @@ void PlayerArray::growElements(unsigned int additionalCount)
 	
 }
 
-void PlayerArray::addProfile(const PlayerProfile profile)
+void PlayerArray::addProfile(const PlayerProfile& profile)
 {
 	growElements(1);
 	elements[count - 1] = profile;

@@ -21,7 +21,7 @@ public:
 	~PlayerArray() { delete[] elements; };
 
 	/*adds the provided profile to array*/
-	void addProfile(const PlayerProfile profile);
+	void addProfile(const PlayerProfile& profile);
 
 	/*returns the line number of the found profile (starting from 1). Returns 0 if there is none. Returns -1 if the profile has not been saved to file yet. Uses binary search.*/
 	int findProfile(const char* name);

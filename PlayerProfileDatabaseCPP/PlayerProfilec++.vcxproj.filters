@@ -21,9 +21,6 @@
     <ClCompile Include="ProfileConsole.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="PlayerProfile.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="PlayerArray.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

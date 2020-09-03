@@ -144,7 +144,6 @@
     <ClCompile Include="MenuAddPlayerProfile.cpp" />
     <ClCompile Include="MenuChangePlayerProfile.cpp" />
     <ClCompile Include="PlayerArray.cpp" />
-    <ClCompile Include="PlayerProfile.cpp" />
     <ClCompile Include="ProfileConsole.cpp" />
   </ItemGroup>
   <ItemGroup>

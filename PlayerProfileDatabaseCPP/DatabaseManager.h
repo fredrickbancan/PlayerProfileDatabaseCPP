@@ -31,7 +31,7 @@ public:
 	~DatabaseManager();
 
 	/*initialize database manager*/
-	void init() { tryToLoadDatabase(); }
+	void init();
 
 	/*adds new player profile to database with provided name and high score*/
 	void addNewPlayerProfile(const char* name, unsigned int score);
