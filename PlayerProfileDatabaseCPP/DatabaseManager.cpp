@@ -30,12 +30,13 @@ void DatabaseManager::init()
 
 void DatabaseManager::addNewPlayerProfile(const char* name, unsigned int score)
 {
-	changedData->addProfile(PlayerProfile(name, score));
+	changedData->addProfile(PlayerProfile(name, score).setLineNumber(0));
 }
 
 void DatabaseManager::printDatabaseToConsole()
 {
 	loadedData->sortAlphabetically();
+	std::cout << loadedData->getCount() << std::endl;
 	for (unsigned int i = 0; i < loadedData->getCount(); i++)
 	{
 		std::string entry = std::string("Name: ") + loadedData->elementAt(i).name + std::string(" | High Score: ") + std::to_string(loadedData->elementAt(i).highScore);
@@ -48,6 +49,8 @@ bool DatabaseManager::tryToChangeExistingPlayerProfile(const char* name, unsigne
 	//TODO: impliment, after changing existing player data, add to changed player data array for saving.
 	return false;
 }
+
+/*returns a string which is the directory of the database file*/
 std::string getDatabaseDir()
 {
 	//getting current working dir, 512 is the max bytes allowed for the directory. It shouldnt be more than that.
@@ -146,23 +149,51 @@ void DatabaseManager::tryToLoadDatabase()
 	{
 		ProfileConsole::error("Database file could not be created and/or opened!");
 		error = true;
+		ProfileConsole::pausePrompt();
 	}
 	else if(!previousDatabaseExists)
 	{
 		ProfileConsole::list("New database file created and opened!");
+		ProfileConsole::pausePrompt();
 	}
 
-	ProfileConsole::pausePrompt();
-
-	if (previousDatabaseExists)//attempt to load data from file using inFileStream
-	{
-		//TODO: load actual binary data into player array.
-		loadedData = new PlayerArray(new PlayerProfile[2]{ {"FILE_NOT_READ", 420}, {"PLACE_HOLDER", 69} }, 2);
-	}
-	else
+	if (!previousDatabaseExists)//if this is a brand new database
 	{
 		loadedData = new PlayerArray(new PlayerProfile[0], 0);//initialize the data to be empty if there was no existing database file
+		fileStream.close();
+		return;//exit method, loading is complete.
 	}
 
-	fileStream.close();//do last
+	char currentProfileData[sizeof(PlayerProfile)] = { '\0' };
+	loadedData = new PlayerArray(new PlayerProfile[0], 0);
+	bool endOfData = false;
+	char test;
+	for (unsigned int i = 0; !endOfData; i++)//loop through all data in database file and construct playerprofiles for each chunk of bytes the size of a playerprofile.
+	{
+		for (unsigned int j = 0; j < sizeof(PlayerProfile); j++)//step over next playerprofile bytes to check if theres enough left to construct a profile.
+		{
+			fileStream.read(&test, 1);//apparently it is required to read each byte to detect end of file
+			if (fileStream.eof())//if the end of the file is reached, break out of loop. loading is finished.
+			{
+				endOfData = true;
+				break;
+			}
+		}
+		if (endOfData)
+		{
+			break;//if the end of the file is reached, break out of loop. loading is finished.
+		}
+
+		fileStream.seekg(-(int)(sizeof(PlayerProfile)), std::ios::cur);//move back to the beginning of the current profile bytes.
+		fileStream.read(currentProfileData, sizeof(PlayerProfile));//read bytes to buffer
+
+		loadedData->addProfile(PlayerProfile(currentProfileData).setLineNumber(i + 1));//add new profile with data read, and set line number. Plus one because our line number starts from 1
+
+		//clear buffer to zeros
+		for (unsigned int j = 0; j < sizeof(PlayerProfile); j++)
+		{
+			currentProfileData[j] = '\0';
+		}
+	}
+	fileStream.close();
 }
