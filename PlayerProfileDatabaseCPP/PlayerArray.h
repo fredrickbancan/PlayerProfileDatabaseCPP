@@ -16,6 +16,9 @@ private:
 	/*called to increase count of  elements array. Copies, deletes and reallocates*/
 	void growElements(unsigned int additionalCount);
 
+	/*Swaps the two values in the elements array at the two provided indices. Used for sorting.*/
+	void swap(unsigned int a, unsigned int b);
+
 public:
 	PlayerArray(PlayerProfile* data, unsigned int elementCount);
 	~PlayerArray() { delete[] elements; };

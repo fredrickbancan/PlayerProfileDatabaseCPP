@@ -81,8 +81,8 @@ void ProfileConsole::doUserInput()
 	clearPrompt();
 	announce("Attempting to save all changed profiles...\n");
 
-	DatabaseManager::get()->addNewPlayerProfile("savetest1", 257);
-	DatabaseManager::get()->addNewPlayerProfile("savetest2", 258);//temp, testing save
+	DatabaseManager::get()->addNewPlayerProfile("fredrick", 257);
+	DatabaseManager::get()->addNewPlayerProfile("bancan", 258);//temp, testing save
 
 	DatabaseManager::get()->tryToSaveChangedDataToFile();
 	if (DatabaseManager::get()->getHasError())

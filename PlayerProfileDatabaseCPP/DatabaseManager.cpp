@@ -47,6 +47,7 @@ void DatabaseManager::printDatabaseToConsole()
 bool DatabaseManager::tryToChangeExistingPlayerProfile(const char* name, unsigned int score)
 {
 	//TODO: impliment, after changing existing player data, add to changed player data array for saving.
+	//Requires sorting and binary search.
 	return false;
 }
 
@@ -100,7 +101,6 @@ void DatabaseManager::tryToSaveChangedDataToFile()
 			ProfileConsole::announce(std::string("Saving profile: " + std::string(changedData->elementAt(i).name)).c_str());//print name of saved profile
 			
 			//move cursor to beginning of profile at specific line number (save index)
-			//TODO: test if working correctly
 			fileStream.seekp((long long)(changedData->elementAt(i).originalLineNumber - 1) * sizeof(PlayerProfile), std::ios::beg);
 			fileStream.write((const char*)&(changedData->elementAt(i)), sizeof(PlayerProfile));//write bytes of the profile
 		}
@@ -131,6 +131,7 @@ void DatabaseManager::tryToLoadDatabase()
 	{
 		ProfileConsole::list("Database file found, opening!");
 		previousDatabaseExists = true;
+		ProfileConsole::pausePrompt();
 	}
 	else if (fileStream.fail())
 	{

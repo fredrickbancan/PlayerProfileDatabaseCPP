@@ -1,9 +1,8 @@
 #pragma once
+constexpr unsigned int nameLength = 16;//15 characters plus 1 for null terminator
 /*Simple player struct for storing player data*/
 struct PlayerProfile
 {
-	static constexpr unsigned int nameLength = 16;//15 characters plus 1 for null terminator
-
 	PlayerProfile(const char* name, unsigned int score)//constructor for creating new profiles
 	{
 		for (unsigned int i = 0; name[i] != '\0' && i < nameLength-1; i++)
