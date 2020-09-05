@@ -46,8 +46,16 @@ void DatabaseManager::printDatabaseToConsole()
 
 bool DatabaseManager::tryToChangeExistingPlayerProfile(const char* name, unsigned int score)
 {
-	//TODO: impliment, after changing existing player data, add to changed player data array for saving.
-	//Requires sorting and binary search.
+	PlayerProfile* result = nullptr;
+	if (loadedData->findProfile(name, result))
+	{
+		if (result != nullptr)
+		{
+			result->highScore = score;
+		}
+		//TODO: save profile to file.
+		return true;
+	}
 	return false;
 }
 

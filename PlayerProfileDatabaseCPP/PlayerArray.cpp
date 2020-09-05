@@ -70,18 +70,59 @@ void PlayerArray::swap(unsigned int a, unsigned int b)
 	elements[b] = temp;
 }
 
-void PlayerArray::addProfile(const PlayerProfile& profile)
+bool PlayerArray::binarySearchByNameRecursive(const char* name, unsigned int left, unsigned int right, unsigned int& resultIndex)
 {
-	growElements(1);
-	elements[count - 1] = profile;
-	isSorted = false;
+	if (left >= right || right > count)
+	{
+		return false;
+	}
+
+	unsigned int midPoint = (left + right) / 2;
+	if (std::string(elements[midPoint].name) == std::string(name))
+	{
+		resultIndex = midPoint;
+		return true;
+	}
+
+	bool greater = std::string(name) > std::string(elements[midPoint].name);
+
+	if (greater)
+	{
+		return binarySearchByNameRecursive(name, midPoint +1, right, resultIndex);
+	}
+	return binarySearchByNameRecursive(name, left, midPoint - 1, resultIndex);
 }
 
-int PlayerArray::findProfile(const char* name)
+bool PlayerArray::findProfile(const char* name, PlayerProfile*& result)
 {
 	sortAlphabetically();
-	//TODO: impliment
-	//do binary search here
+	unsigned int resultIndex = 0;
+
+	if (binarySearchByNameRecursive(name, 0, count-1, resultIndex))
+	{
+		result = &(elements[resultIndex]);
+		return true;
+	}
 
 	return false;
 }
+
+void PlayerArray::addProfile(const PlayerProfile& profile)
+{
+	PlayerProfile* searchResult = nullptr;
+	if (findProfile(profile.name, searchResult))//check to see if profile is already in elements
+	{
+		if (searchResult != nullptr)
+		{
+			(*searchResult) = profile;//replace existing profile
+		}
+	}
+	else
+	{
+		growElements(1);
+		elements[count - 1] = profile;
+	}
+
+	isSorted = false;//do last
+}
+
