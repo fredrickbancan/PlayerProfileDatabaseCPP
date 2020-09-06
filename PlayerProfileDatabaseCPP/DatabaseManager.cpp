@@ -28,6 +28,25 @@ void DatabaseManager::init()
 	tryToLoadDatabase();
 }
 
+void DatabaseManager::addProfileToChangedList(const PlayerProfile* profile)
+{
+	if (changedData->contains(profile->name))
+	{
+		changedData->replaceProfile(*profile);
+	}
+	else
+	{
+		changedData->addNewProfile(*profile);
+	}
+
+	for (unsigned int i = 0; i < changedData->getCount(); i++)
+	{
+		std::cout << changedData->elementAt(i).name << std::endl;
+		std::cout << changedData->elementAt(i).highScore << std::endl;
+		std::cout << changedData->elementAt(i).originalLineNumber << std::endl;
+	}
+}
+
 void DatabaseManager::addOrReplaceProfile(const char* name, unsigned int score)
 {
 
@@ -72,6 +91,11 @@ void DatabaseManager::printDatabaseToConsole()
 		std::string entry = std::string("Name: ") + loadedData->elementAt(i).name + std::string(" | High Score: ") + std::to_string(loadedData->elementAt(i).highScore);
 		ProfileConsole::list(entry.c_str());
 	}
+}
+
+bool DatabaseManager::findProfile(const char* name, PlayerProfile*& result)
+{
+	return loadedData->findProfile(name, result);
 }
 
 bool DatabaseManager::tryToChangeExistingPlayerProfile(const char* name, unsigned int score)

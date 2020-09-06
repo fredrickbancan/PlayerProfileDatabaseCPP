@@ -81,9 +81,6 @@ void ProfileConsole::doUserInput()
 	clearPrompt();
 	announce("Attempting to save all changed profiles...\n");
 
-	//temp, testing save
-	DatabaseManager::get()->addOrReplaceProfile("nani", 123);
-	DatabaseManager::get()->addOrReplaceProfile("wang", 423);
 
 	DatabaseManager::get()->tryToSaveChangedDataToFile();
 	if (DatabaseManager::get()->getHasError())

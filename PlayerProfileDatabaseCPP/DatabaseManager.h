@@ -1,5 +1,6 @@
 #pragma once
 class PlayerArray;
+struct PlayerProfile;
 /*static class for loading, editing and saving player profile database*/
 class DatabaseManager
 {
@@ -33,11 +34,17 @@ public:
 	/*initialize database manager*/
 	void init();
 
+	/*adds the provided profile to the changed list so it will be saved to file*/
+	void addProfileToChangedList(const PlayerProfile* profile);
+
 	/*adds or replaces a profile depending if its already in the data. This avoids creating duplicate profiles.*/
 	void addOrReplaceProfile(const char* name, unsigned int score);
 
 	/*Prints the loaded database to console in alphabetical order*/
 	void printDatabaseToConsole();
+
+	/*returns true if profile is found in database and assigns it to result pointer for use*/
+	bool findProfile(const char* name, PlayerProfile*& result);
 
 	/*Attempts to find a provided player profile by name and changes its high score to the one provided.
 	  Returns: true if found, false if not found.*/
