@@ -5,22 +5,25 @@
 
 void MenuAddPlayerProfile::doMenu()
 {
-	PlayerProfile* foundProfile;
-	//TODO: impliment
-	ProfileConsole::announce("Enter the name of the player whos high score you wish to edit:");
+	char inputName[16];
+	ProfileConsole::announce("Enter the name of the player you want to add:");
 	ProfileConsole::announce("(1-15 characters)");
 
 	//get player name
 	while (true)
 	{
-		char input[16];
-		std::cin.get(input, 16);
+		for (unsigned short i = 0; i < 16; i++)//reset name buffer to 0
+		{
+			inputName[i] = '\0';
+		}
+
+		std::cin.get(inputName, 16);
 		std::cout << std::endl;
 
-		input[15] = '\0';//make sure string is null terminated
+		inputName[15] = '\0';//make sure string is null terminated
 
 		/*check if name was legit*/
-		if (ProfileConsole::isNullOrWhiteSpace(input) || std::cin.fail())
+		if (ProfileConsole::isNullOrWhiteSpace(inputName) || std::cin.fail())
 		{
 			ProfileConsole::error("Please enter atleast 1 character for the players name!");
 			std::cout << std::endl;
@@ -28,21 +31,12 @@ void MenuAddPlayerProfile::doMenu()
 			std::cin.ignore(std::cin.rdbuf()->in_avail());//resets the console input so we can provide more
 			continue;
 		}
-
-		if (DatabaseManager::get()->findProfile(input, foundProfile))
-		{
-			break;
-		}
-		else
-		{
-			ProfileConsole::error("Could not find profile with provided name.");
-			return;
-		}
+		break;
 	}
 
 	std::cin.ignore(std::cin.rdbuf()->in_avail());//resets the console input so we can provide more
 
-	ProfileConsole::announce("Enter new high score for found player:");
+	ProfileConsole::announce("Enter high score for the player:");
 	ProfileConsole::announce("(must be numerical value)");
 
 	//get player new score
@@ -65,9 +59,8 @@ void MenuAddPlayerProfile::doMenu()
 			continue;
 		}
 
-		foundProfile->highScore = (unsigned int)number;
-		DatabaseManager::get()->addProfileToChangedList(foundProfile);
-		ProfileConsole::list("Changed profile high score.");
+		DatabaseManager::get()->addOrReplaceProfile(inputName, number);
+		ProfileConsole::list("Added new player profile.");
 
 		std::cin.ignore(std::cin.rdbuf()->in_avail());//resets the console input so we can provide more
 		return;

@@ -38,13 +38,6 @@ void DatabaseManager::addProfileToChangedList(const PlayerProfile* profile)
 	{
 		changedData->addNewProfile(*profile);
 	}
-
-	for (unsigned int i = 0; i < changedData->getCount(); i++)
-	{
-		std::cout << changedData->elementAt(i).name << std::endl;
-		std::cout << changedData->elementAt(i).highScore << std::endl;
-		std::cout << changedData->elementAt(i).originalLineNumber << std::endl;
-	}
 }
 
 void DatabaseManager::addOrReplaceProfile(const char* name, unsigned int score)
