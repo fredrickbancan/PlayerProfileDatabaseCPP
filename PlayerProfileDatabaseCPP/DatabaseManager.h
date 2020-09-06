@@ -33,8 +33,8 @@ public:
 	/*initialize database manager*/
 	void init();
 
-	/*adds new player profile to database with provided name and high score.*/
-	void addNewPlayerProfile(const char* name, unsigned int score);
+	/*adds or replaces a profile depending if its already in the data. This avoids creating duplicate profiles.*/
+	void addOrReplaceProfile(const char* name, unsigned int score);
 
 	/*Prints the loaded database to console in alphabetical order*/
 	void printDatabaseToConsole();

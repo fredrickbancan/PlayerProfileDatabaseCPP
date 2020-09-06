@@ -5,7 +5,7 @@ class PlayerArray
 {
 	//fields
 private:
-	bool isSorted = false;//true if elements have been sorted
+	bool isAlphabeticallySorted = false;//true if elements have been sorted
     unsigned int count;//count of elements
 	unsigned int size;//size in bytes
 	PlayerProfile* elements = nullptr;
@@ -28,8 +28,14 @@ public:
 	PlayerArray(PlayerProfile* data, unsigned int elementCount);
 	~PlayerArray() { delete[] elements; };
 
-	/*adds the provided profile to array*/
-	void addProfile(const PlayerProfile& profile);
+	/*searches for the profile provided by name, and replaces it with the new values (namely highscore)*/
+	void replaceProfile(const PlayerProfile& profile);
+
+	/*adds new profile to array. Make sure you check if a profile already exists with same name using contains(). If so, use replaceProfile.*/
+	void addNewProfile(const PlayerProfile& profile);
+
+	/*searches for the profile provided by name, returns true if the array contains it.*/
+	bool contains(const char* name);
 
 	/*returns true if a profile with the provided name is in the array and assigns result with that profile.*/
 	bool findProfile(const char* name, PlayerProfile*& result);

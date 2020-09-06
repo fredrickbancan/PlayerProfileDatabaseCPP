@@ -5,8 +5,5 @@
 void MenuChangePlayerProfile::doMenu()
 {
 	//TODO: impliment
-	bool found = false;
-	found = DatabaseManager::get()->tryToChangeExistingPlayerProfile("bancan", 420);
-	std::cout << found << std::endl;
 
 }

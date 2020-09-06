@@ -28,15 +28,45 @@ void DatabaseManager::init()
 	tryToLoadDatabase();
 }
 
-void DatabaseManager::addNewPlayerProfile(const char* name, unsigned int score)
+void DatabaseManager::addOrReplaceProfile(const char* name, unsigned int score)
 {
-	changedData->addProfile(PlayerProfile(name, score).setLineNumber(0));
+
+	//if profile exists in database then we need to overwrite score and add it to changed array
+	if (loadedData->contains(name))
+	{
+		PlayerProfile* result;
+		loadedData->findProfile(name, result);
+		result->highScore = score;
+
+		if (changedData->contains(name))
+		{
+			changedData->replaceProfile(*result);
+		}
+		else
+		{
+			changedData->addNewProfile(*result);
+		}
+	}
+	else
+	{
+		loadedData->addNewProfile(PlayerProfile(name, score));
+		if (changedData->contains(name))
+		{
+			PlayerProfile* result;
+			changedData->findProfile(name, result);
+			result->highScore = score;
+		}
+		else
+		{
+			changedData->addNewProfile(PlayerProfile(name, score));
+		}
+	}
 }
 
 void DatabaseManager::printDatabaseToConsole()
 {
 	loadedData->sortAlphabetically();
-	std::cout << loadedData->getCount() << std::endl;
+	ProfileConsole::announce(std::string("Count of entries: " + std::to_string(loadedData->getCount())).c_str());
 	for (unsigned int i = 0; i < loadedData->getCount(); i++)
 	{
 		std::string entry = std::string("Name: ") + loadedData->elementAt(i).name + std::string(" | High Score: ") + std::to_string(loadedData->elementAt(i).highScore);
@@ -52,8 +82,17 @@ bool DatabaseManager::tryToChangeExistingPlayerProfile(const char* name, unsigne
 		if (result != nullptr)
 		{
 			result->highScore = score;
+
+			//add changed profile to changed data to be saved
+			if (changedData->contains(result->name))
+			{
+				changedData->replaceProfile(*result);
+			}
+			else
+			{
+				changedData->addNewProfile(*result);
+			}
 		}
-		//TODO: save profile to file.
 		return true;
 	}
 	return false;
@@ -75,9 +114,9 @@ void DatabaseManager::tryToSaveChangedDataToFile()
 		return;
 	}
 
-	//try to open file
 	std::fstream fileStream;
 
+	//try to open file
 	fileStream.open(getDatabaseDir(), std::ios::in | std::ios::out | std::ios::binary);
 	if (fileStream.fail() || !fileStream.is_open())//if the file could not be opened
 	{
@@ -88,25 +127,26 @@ void DatabaseManager::tryToSaveChangedDataToFile()
 		return;
 	}
 
-	if (fileStream.peek() == std::ifstream::traits_type::eof())//if the file is empty, we just need to append all changed (new) profiles to the file and return
+	//if the file is empty, we just need to append all changed (new) profiles to the file and return
+	if (fileStream.peek() == std::ifstream::traits_type::eof())
 	{
 		fileStream.close();
 		fileStream.open(getDatabaseDir(), std::ios::in | std::ios::out | std::ios::app | std::ios::binary);//re open filestream with append mode.
 		for (unsigned int i = 0; i < changedData->getCount(); i++)//loop through each changed profile
 		{
-			ProfileConsole::announce(std::string("Saving profile: " + std::string(changedData->elementAt(i).name)).c_str());//print name of saved profile
+			ProfileConsole::announce(std::string("Saving new profile: " + std::string(changedData->elementAt(i).name)).c_str());//print name of saved profile
 			fileStream.write((const char*)&(changedData->elementAt(i)), sizeof(PlayerProfile));//write bytes of the profile
 		}
 		fileStream.close();
 		return;//saving complete, exit method.
 	}
 
-
-	for (unsigned int i = 0; i < changedData->getCount(); i++)//loop through each changed profile and save all pre-existing profiles that have changed to their assigned line number (save index)
+	//loop through each changed profile and save all pre-existing profiles that have changed to their assigned line number (save index)
+	for (unsigned int i = 0; i < changedData->getCount(); i++)
 	{
 		if (changedData->elementAt(i).originalLineNumber > 0)
 		{
-			ProfileConsole::announce(std::string("Saving profile: " + std::string(changedData->elementAt(i).name)).c_str());//print name of saved profile
+			ProfileConsole::announce(std::string("Saving changed profile: " + std::string(changedData->elementAt(i).name)).c_str());//print name of saved profile
 			
 			//move cursor to beginning of profile at specific line number (save index)
 			fileStream.seekp((long long)(changedData->elementAt(i).originalLineNumber - 1) * sizeof(PlayerProfile), std::ios::beg);
@@ -114,13 +154,16 @@ void DatabaseManager::tryToSaveChangedDataToFile()
 		}
 	}
 
+	//re open filestream with append mode for saving newly added profiles.
 	fileStream.close();
-	fileStream.open(getDatabaseDir(), std::ios::in | std::ios::out | std::ios::app | std::ios::binary);//re open filestream with append mode for saving newly added profiles.
-	for (unsigned int i = 0; i < changedData->getCount(); i++)//loop through each changed profile and save all new profiles at end of file
+	fileStream.open(getDatabaseDir(), std::ios::in | std::ios::out | std::ios::app | std::ios::binary);
+
+	//loop through each changed profile and save all new profiles at end of file
+	for (unsigned int i = 0; i < changedData->getCount(); i++)
 	{
-		if (changedData->elementAt(i).originalLineNumber == 0)
+		if (changedData->elementAt(i).originalLineNumber == 0)//0 means new profile.
 		{
-			ProfileConsole::announce(std::string("Saving profile: " + std::string(changedData->elementAt(i).name)).c_str());//print name of saved profile
+			ProfileConsole::announce(std::string("Saving new profile: " + std::string(changedData->elementAt(i).name)).c_str());//print name of saved profile
 			fileStream.write((const char*)&(changedData->elementAt(i)), sizeof(PlayerProfile));//write bytes of the profile
 		}
 	}
@@ -133,10 +176,11 @@ void DatabaseManager::tryToLoadDatabase()
 	ProfileConsole::announce(std::string("Checking directory for database file: " + getDatabaseDir()).c_str());
 
 	//try to find file
-	std::fstream fileStream(getDatabaseDir(), std::ios::in);
+	std::fstream fileStream(getDatabaseDir(), std::ios::in | std::ios::binary);
 
 	if (fileStream.is_open())//if the file was found
 	{
+		ProfileConsole::list("");
 		ProfileConsole::list("Database file found, opening!");
 		previousDatabaseExists = true;
 		ProfileConsole::pausePrompt();
@@ -156,12 +200,14 @@ void DatabaseManager::tryToLoadDatabase()
 
 	if (!previousDatabaseExists && (!fileStream.is_open() || fileStream.fail()))
 	{
+		ProfileConsole::error("");
 		ProfileConsole::error("Database file could not be created and/or opened!");
 		error = true;
 		ProfileConsole::pausePrompt();
 	}
 	else if(!previousDatabaseExists)
 	{
+		ProfileConsole::list("");
 		ProfileConsole::list("New database file created and opened!");
 		ProfileConsole::pausePrompt();
 	}
@@ -173,7 +219,8 @@ void DatabaseManager::tryToLoadDatabase()
 		return;//exit method, loading is complete.
 	}
 
-	char currentProfileData[sizeof(PlayerProfile)] = { '\0' };
+	char currentProfileName[nameLength] = { '\0' };
+	unsigned int readScore = 0;//highscore read from bytes
 	loadedData = new PlayerArray(new PlayerProfile[0], 0);
 	bool endOfData = false;
 	char test;
@@ -194,15 +241,20 @@ void DatabaseManager::tryToLoadDatabase()
 		}
 
 		fileStream.seekg(-(int)(sizeof(PlayerProfile)), std::ios::cur);//move back to the beginning of the current profile bytes.
-		fileStream.read(currentProfileData, sizeof(PlayerProfile));//read bytes to buffer
+		fileStream.read(currentProfileName, nameLength);//read bytes to name buffer
+		fileStream.read(reinterpret_cast<char*>(&readScore), sizeof(readScore));//read next 4 bytes to score
 
-		loadedData->addProfile(PlayerProfile(currentProfileData).setLineNumber(i + 1));//add new profile with data read, and set line number. Plus one because our line number starts from 1
+		//skip over the remaining bytes of the profile (line number unsigned int, 4 bytes)
+		fileStream.seekg(sizeof(PlayerProfile) - (nameLength + sizeof(readScore)), std::ios::cur);
+
+		loadedData->addNewProfile(PlayerProfile(currentProfileName, readScore).setLineNumber(i + 1));//add new profile with name and score read, and set line number. Plus one because our line number starts from 1
 
 		//clear buffer to zeros
-		for (unsigned int j = 0; j < sizeof(PlayerProfile); j++)
+		for (unsigned int j = 0; j < nameLength; j++)
 		{
-			currentProfileData[j] = '\0';
+			currentProfileName[j] = '\0';
 		}
+		readScore = 0;//reset score
 	}
 	fileStream.close();
 }

@@ -7,7 +7,7 @@ PlayerArray::PlayerArray(PlayerProfile* data, unsigned int elementCount) : eleme
 
 void PlayerArray::sortAlphabetically()
 {
-	if (isSorted || count < 2)//no need to sort if elements are previously sorted or if there are less than 2 elements
+	if (isAlphabeticallySorted || count < 2)//no need to sort if elements are previously sorted or if there are less than 2 elements
 	{
 		return;
 	}
@@ -39,7 +39,7 @@ void PlayerArray::sortAlphabetically()
 	} 
 	while (moreSortingNeeded);
 
-	isSorted = true;//do last
+	isAlphabeticallySorted = true;//do last
 }
 
 void PlayerArray::growElements(unsigned int additionalCount)
@@ -55,7 +55,7 @@ void PlayerArray::growElements(unsigned int additionalCount)
 	elements = newArray;
 	count += additionalCount;
 	size = count * sizeof(PlayerProfile);
-	
+	isAlphabeticallySorted = false;
 }
 
 void PlayerArray::swap(unsigned int a, unsigned int b)
@@ -72,7 +72,7 @@ void PlayerArray::swap(unsigned int a, unsigned int b)
 
 bool PlayerArray::binarySearchByNameRecursive(const char* name, unsigned int left, unsigned int right, unsigned int& resultIndex)
 {
-	if (left >= right || right > count)
+	if (left > right || right > count)
 	{
 		return false;
 	}
@@ -106,8 +106,7 @@ bool PlayerArray::findProfile(const char* name, PlayerProfile*& result)
 
 	return false;
 }
-
-void PlayerArray::addProfile(const PlayerProfile& profile)
+void PlayerArray::replaceProfile(const PlayerProfile& profile)
 {
 	PlayerProfile* searchResult = nullptr;
 	if (findProfile(profile.name, searchResult))//check to see if profile is already in elements
@@ -117,12 +116,18 @@ void PlayerArray::addProfile(const PlayerProfile& profile)
 			(*searchResult) = profile;//replace existing profile
 		}
 	}
-	else
-	{
-		growElements(1);
-		elements[count - 1] = profile;
-	}
+}
 
-	isSorted = false;//do last
+void PlayerArray::addNewProfile(const PlayerProfile& profile)
+{
+	growElements(1);
+	elements[count - 1] = profile;
+	isAlphabeticallySorted = false;
+}
+
+bool PlayerArray::contains(const char* name)
+{
+	PlayerProfile* searchResult = nullptr;
+	return findProfile(name, searchResult);//check to see if profile is already in elements
 }
 
